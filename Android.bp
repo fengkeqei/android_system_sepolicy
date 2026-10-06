@@ -685,6 +685,12 @@ precompiled_se_policy_binary {
     srcs: [
         ":precompiled_sepolicy_srcs",
     ],
+    // Round-72: beyond1q keeps its 35 un-domainized Samsung vendor daemons in
+    // the vendor_legacy_service catch-all, which is deliberately permissive
+    // (see device/samsung/sm8150-common/sepolicy/vendor/vendor_legacy_service.te).
+    // Without this whitelist the user-build permissive check would reject the
+    // whole policy.
+    permissive_domains_on_user_builds: ["vendor_legacy_service"],
     soong_config_variables: {
         BOARD_USES_ODMIMAGE: {
             device_specific: true,
@@ -733,6 +739,9 @@ se_policy_binary {
     srcs: [":recovery_sepolicy.cil"],
     stem: "sepolicy",
     recovery: true,
+    // Round-72: beyond1q device tree keeps fastbootd permissive in recovery
+    // and the vendor_legacy_service catch-all is permissive (userdebug).
+    permissive_domains_on_user_builds: ["fastbootd", "vendor_legacy_service"],
 }
 
 //////////////////////////////////
